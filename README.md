@@ -53,7 +53,7 @@ You can change this behavior by changing the backend Nuget Package installed in 
 
 You can select a pacakge with a different Cuda version or CPU backend if you wish using the dotnet cli or within your IDE.
 
-[![LlamaSharp Backend](docs/llamasharp-backend-package.png)]
+![LlamaSharp Backend](docs/llamasharp-backend-package.png)
 
 ### Loding existing models.
 
@@ -70,10 +70,10 @@ Selecting a model will overwrite the contents of `BLlamaSharp.ChatGpt.Blazor/Def
 
 Open the model search and select the model you wish to use.
 
-[![Model Search](docs/model-search.png)]
+![Model Search](docs/model-search.png)
 
 This will open a list of fine tune models available.
-[![Model Details](docs/model-list-details.png)]
+![Model Details](docs/model-list-details.png)
 
 Models that exist in your models folder will have a check next to the select button.
 [![Model Select](docs/model-list-details.png)]
@@ -83,14 +83,14 @@ Selecting the model will save the model path in `BLlamaSharp.ChatGpt.Blazor/Defa
  ### Dowloading new models.
  
  You can download new models to try out. When using the model browser, if the model doesn't exist in your model folder there will be no check next to the select button on the model details screen.
- [![Model Download Selection](docs/model-download-select.png)]
+ ![Model Download Selection](docs/model-download-select.png)
 
  Clicking select one these models will open a model download screen. Simply click `Download` to start the download.
  
- [![Model Download In Progress](docs/model-download.png)]
+ ![Model Download In Progress](docs/model-download.png)
  
  Once completed you can close the screen.
- [![Model Download Complete](docs/model-download-complete.png)]
+ ![Model Download Complete](docs/model-download-complete.png)
  
  ## Using the chat.
  
@@ -98,35 +98,35 @@ Selecting the model will save the model path in `BLlamaSharp.ChatGpt.Blazor/Defa
  
  If you have not set your model folder in `BLlamaSharp.ChatGpt.Blazor/appsettings.json` or the model path in `BLlamaSharp.ChatGpt.Blazor/DefaultModel.env` you will get the message below. You can use the model search to download models and set the `BLlamaSharp.ChatGpt.Blazor/DefaultModel.env` path for you.
  
- [![Chat Download Model Prompt](docs/chat-download-model-first.png)]
+ ![Chat Download Model Prompt](docs/chat-download-model-first.png)
  
  If the model exists you will see a loading model message.
  
-[![Chat Loading Model](docs/model-loading.png)]
+![Chat Loading Model](docs/model-loading.png)
 
 Once the model has loaded you will be given a prompt to initialize the LLM chat agent.
 
-[![Chat Initialize](docs/chat-initialize.png)]
+![Chat Initialize](docs/chat-initialize.png)
 
 After initializing the LLM you can begin chatting. After entering your message you will see a getting reply notice.
 
-[![Chat Initialize](docs/chat-getting-reply.png)]
+![Chat Initialize](docs/chat-getting-reply.png)
 
 While this is happening you will see output to the console as `LLamaSharp` and the `Microsoft.SemanticKernel` do their work.
 
-[![LLamaSharp console](docs/llamasharp-console.png)]
+![LLamaSharp console](docs/llamasharp-console.png)
  
 The time to get a reply varies widely based on the model you have selected and the hardware you have available.
  
-[![LLamaSharp console](docs/chat-reply.png)]
+![LLamaSharp console](docs/chat-reply.png)
 
  
- #License
+# License
  
 This project is licensed under the [Apache 2.0 license](LICENSE).
  
-It utilizes reference code and binaries from https://github.com/SciSharp/LLamaSharp which is licensed under the MIT LICENSE.
+It utilizes reference code and binaries from [LLamaSharp](https://github.com/SciSharp/LLamaSharp) which is licensed under the MIT LICENSE.
 
-LLama models and usage are licensed under the terms of META's LLama license.
+LLama models and usage are licensed under the terms of [META's LLama Community Lcense](https://ai.meta.com/llama/license/).
  
  
