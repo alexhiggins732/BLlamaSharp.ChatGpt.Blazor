@@ -1,0 +1,47 @@
+﻿@page "/chat"
+
+
+<PageTitle>Chat</PageTitle>
+<style>
+    pre {
+        max-width: 100%;
+        overflow: auto; /* This ensures content that exceeds the width will be scrollable */
+        white-space: pre-wrap; /* Optional: Breaks the lines to prevent horizontal scrolling */
+        max-height: 300px;
+    }
+</style>
+
+
+
+@if (!LoadedModel)
+{
+    <MudText Typo="Typo.h3" GutterBottom="true">@LoadingMessage</MudText>
+
+
+}
+else
+{
+    <MudText Typo="Typo.h6" GutterBottom="true">Model: @ModelName.ToUpper()</MudText>
+    @if (ChatSession.ChatHistory == null || ChatSession.ChatHistory.Count == 0)
+    {
+        <MudText Typo="Typo.h3" GutterBottom="true">No messages yet. Enter a prompt to start a new chat.</MudText>
+
+        <MudTextField Label="Username" @bind-Value="UserName" />
+        <MudTextField Label="Message" @bind-Value="@ChatInitializer" Lines="20" />
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="CreateNewChatAsync">Send</MudButton>
+    }
+    else
+    {
+        @foreach (var message in ChatSession.ChatHistory)
+        {
+            <MudPaper Elevation="1" Class="mb-4">
+                <MudText Typo="Typo.h6">@message.Role</MudText>
+                <MudText><pre>@message.Content</pre></MudText>
+            </MudPaper>
+        }
+        <MudText Typo="Typo.h3" GutterBottom="true">@GettingReplyMessage</MudText>
+    }
+     <MudTextField Label="Message" @bind-Value="@MessageText" Lines="20" @bind-Disabled=@UserMessageTextDisabled />
+    <MudButton Color="Color.Primary" Variant="Variant.Filled" @onclick="SendMessageAsync" @bind-Disabled=@UserSendMessageButtonDisabled>Send</MudButton>
+
+}

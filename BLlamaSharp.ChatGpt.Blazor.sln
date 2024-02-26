@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34616.47
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLlamaSharp.ChatGpt.Console", "BLlamaSharp.ChatGpt.Console\BLlamaSharp.ChatGpt.Console.csproj", "{B2EB2495-FEE8-48E6-BFC1-1A4FAF9C507E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{BD1CEB51-509F-434A-A31F-7FB94E2CE9E3}"
+	ProjectSection(SolutionItems) = preProject
+		ChatHistory.md = ChatHistory.md
+		LICENSE = LICENSE
+		LICENSE.MD = LICENSE.MD
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLlamaSharp.ChatGpt.Blazor", "BLlamaSharp.ChatGpt.Blazor\BLlamaSharp.ChatGpt.Blazor.csproj", "{3E631340-04BC-4660-A70F-514465CFEF0B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BLlamaSharp.ChatGpt.Lib", "BLlamaSharp.ChatGpt.Lib\BLlamaSharp.ChatGpt.Lib.csproj", "{872F2CE5-DC50-41D9-9142-7B409F5B3569}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLlamaSharp.ChatGpt.LibTests", "BLlamaSharp.ChatGpt.LibTests\BLlamaSharp.ChatGpt.LibTests.csproj", "{4D6DC69E-9BCF-429F-BC98-00F647F65DFC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2EB2495-FEE8-48E6-BFC1-1A4FAF9C507E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2EB2495-FEE8-48E6-BFC1-1A4FAF9C507E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2EB2495-FEE8-48E6-BFC1-1A4FAF9C507E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2EB2495-FEE8-48E6-BFC1-1A4FAF9C507E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E631340-04BC-4660-A70F-514465CFEF0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E631340-04BC-4660-A70F-514465CFEF0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E631340-04BC-4660-A70F-514465CFEF0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E631340-04BC-4660-A70F-514465CFEF0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{872F2CE5-DC50-41D9-9142-7B409F5B3569}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{872F2CE5-DC50-41D9-9142-7B409F5B3569}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{872F2CE5-DC50-41D9-9142-7B409F5B3569}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{872F2CE5-DC50-41D9-9142-7B409F5B3569}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D6DC69E-9BCF-429F-BC98-00F647F65DFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D6DC69E-9BCF-429F-BC98-00F647F65DFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D6DC69E-9BCF-429F-BC98-00F647F65DFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D6DC69E-9BCF-429F-BC98-00F647F65DFC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8CE07AFE-8DB2-4108-AEB6-F5C0EFDFA869}
+	EndGlobalSection
+EndGlobal

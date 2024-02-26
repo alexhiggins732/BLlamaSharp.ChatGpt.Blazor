@@ -1,0 +1,45 @@
+﻿{
+  "root": "https://huggingface.co/TheBloke/wizardLM-7B-GGML/resolve/main",
+  "models": [
+    {
+      "name": "wizardLM-7B.ggmlv3.q4_0.bin",
+      "quantMethod": "q4_0",
+      "bits": 4,
+      "size": "3.79 GB",
+      "maxRAMRequired": "6.29 GB",
+      "useCase": "Original llama.cpp quant method, 4-bit. Suitable for scenarios where balance between performance and accuracy is needed."
+    },
+    {
+      "name": "wizardLM-7B.ggmlv3.q4_1.bin",
+      "quantMethod": "q4_1",
+      "bits": 4,
+      "size": "4.21 GB",
+      "maxRAMRequired": "6.71 GB",
+      "useCase": "Offers higher accuracy than q4_0 with quicker inference than q5 models, maintaining 4-bit quantization."
+    },
+    {
+      "name": "wizardLM-7B.ggmlv3.q5_0.bin",
+      "quantMethod": "q5_0",
+      "bits": 5,
+      "size": "4.63 GB",
+      "maxRAMRequired": "7.13 GB",
+      "useCase": "5-bit original llama.cpp quant method. Higher accuracy with increased resource usage and slower inference, recommended for accuracy-critical applications."
+    },
+    {
+      "name": "wizardLM-7B.ggmlv3.q5_1.bin",
+      "quantMethod": "q5_1",
+      "bits": 5,
+      "size": "5.06 GB",
+      "maxRAMRequired": "7.56 GB",
+      "useCase": "Enhances the q5_0 model with even higher accuracy and resource requirements. Best for scenarios where maximum accuracy is paramount."
+    },
+    {
+      "name": "wizardLM-7B.ggmlv3.q8_0.bin",
+      "quantMethod": "q8_0",
+      "bits": 8,
+      "size": "7.16 GB",
+      "maxRAMRequired": "9.66 GB",
+      "useCase": "Offers near-float16 accuracy at the cost of high resource use and slow inference. Not recommended for general use but ideal for specific high-accuracy needs."
+    }
+  ]
+}

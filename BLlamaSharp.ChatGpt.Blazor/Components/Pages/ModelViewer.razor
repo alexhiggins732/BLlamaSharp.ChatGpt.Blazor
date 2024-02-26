@@ -1,0 +1,45 @@
+﻿@page "/modelviewer"
+
+
+<PageTitle>Models</PageTitle>
+<style>
+    pre {
+        max-width: 100%;
+        overflow: auto; /* This ensures content that exceeds the width will be scrollable */
+        white-space: pre-wrap; /* Optional: Breaks the lines to prevent horizontal scrolling */
+        max-height: 300px;
+    }
+</style>
+
+@{
+    if (!LoadedModel)
+    {
+        <MudText Typo="Typo.h3" GutterBottom="true">@LoadingMessage</MudText>
+    }
+    else
+    {
+        <MudText Typo="Typo.h3" GutterBottom="true">Models</MudText>
+
+        <MudTextField Label="Search" @bind-Value="SearchTerm
+        " Placeholder="Type to search models..."
+                      Variant="Variant.Outlined" FullWidth Class="mb-4" />
+        <!-- Display the count of filtered models -->
+        <MudText Typo="Typo.body1" GutterBottom="true">Showing @FilteredModels().Count() of @AllModelsBases.Count models</MudText>
+
+
+        <MudGrid>
+            @foreach (var model in FilteredModels())
+            {
+                <MudItem xs="6" sm="6" md="4" lg="3" xl="2" Class="p-20">
+                    <MudPaper Elevation="3" Class="m-2 p-4 d-flex flex-column align-items-center justify-content-space-between" Style="height: 100%; padding:20px">
+                        <MudText Typo="Typo.h6" Class="my-2">@model.Name</MudText>
+                        <!-- <MudText Class="my-2">@model.Url</MudText> -->
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" Class="mt-auto" @onclick="() => NavigateToModelAsync(model)">View</MudButton>
+                    </MudPaper>
+                </MudItem>
+            }
+        </MudGrid>
+    }
+}
+
+

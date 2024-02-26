@@ -1,0 +1,205 @@
+﻿@using BLlamaSharp.ChatGpt.Lib
+@using MudBlazor
+@using System.Reflection
+@using HtmlAgilityPack
+@using Humanizer
+@inject IDialogService DialogService
+@inject IModelProvider ModelProvider
+<style>
+    .mud-dialog {
+        max-width: 80%;
+        padding: 20px;
+    }
+
+    a {
+        color: blue;
+        font-weight: bold;
+    }
+</style>
+
+<a href="@Model.Url" target="_blank">View Details</a>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Model Download: @Model.Name</MudText>
+
+@if (ModelProgress.IsStarted)
+{
+    <MudProgressCircular Size="Size.Large" Color="Color.Primary" />
+    <MudButton Color="Color.Primary" OnClick="() => CancelDownload=true" StartIcon="@Icons.Material.Filled.Cancel">Cancel Download</MudButton>
+    <MudText Typo="Typo.h6">Downloading @ModelProgress.FileName: @(ModelProgress.DownloadPercentage.ToString("P")) (@DisplaySize(ModelProgress.BytesDownloaded) / @DisplaySize(ModelProgress.TotalBytes))</MudText>
+    <MudProgressLinear Color="Color.Info" Size="Size.Large" Value="@DownloadPercentage" Class="my-7">
+        <MudText Typo="Typo.subtitle1" Color="Color.Dark">
+            <b>@ModelProgress.DownloadPercentage.ToString("P")</b>
+        </MudText>
+    </MudProgressLinear>
+
+}
+else if (ModelProgress.IsCompleted)
+{
+    <MudText Typo="Typo.h6" Color="Color.Success">Download complete: @ModelProgress.FileName</MudText>
+
+}
+else if (ModelProgress.IsError)
+{
+    <MudText Typo="Typo.h6" Color="Color.Error">Download Failed</MudText>
+    @if (ModelProgress.Exception != null)
+    {
+        <MudText Typo="Typo.body1">Error: @ModelProgress.Exception.Message</MudText>
+        <MudText Typo="Typo.body2">@ModelProgress.Exception.ToString()</MudText>
+    }
+
+}
+<MudTable Items="@Models" SortLabel="Sort By">
+    <HeaderContent>
+        @foreach (PropertyInfo p in typeof(ModelDetails).GetProperties().Where(x => HasNonNullValues(x)))
+        {
+            <MudTh>@p.Name.Humanize()</MudTh>
+        }
+        <MudTh>Select</MudTh> <!-- Header for the select column -->
+    </HeaderContent>
+    <RowTemplate>
+        @foreach (PropertyInfo p in typeof(ModelDetails).GetProperties().Where(x => HasNonNullValues(x)))
+        {
+            <MudTd>
+                @((MarkupString)(GetPropertyHtml(context, p)))
+            </MudTd>
+        }
+        <MudTd>
+            @{
+                if (HasDownloadLink(@context))
+                {
+                    <MudButton Color="Color.Primary" OnClick="() => DownloadModel(context)" StartIcon="@Icons.Material.Filled.Download">@DownloadButtonText</MudButton>
+                }
+                else
+                {
+                    <MudText Typo="Typo.body2">Manual download required</MudText>
+                }
+            }
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter] public ModelDetails ModelDetails { get; set; } = null!;
+    [Parameter] public List<ModelDetails> Models { get; set; } = new List<ModelDetails>();
+    [Parameter] public ModelBase Model { get; set; } = null!;
+    private DownloadProgress ModelProgress = new DownloadProgress();
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+    public ModelDetails? SelectedItem { get; set; }
+    public string DownloadPath { get; set; } = null!;
+    public string DownloadUrl { get; set; } = null!;
+    private bool CancelDownload { get; set; } = false;
+
+    string DownloadButtonText
+    {
+        get
+        {
+            return ModelProgress.IsStarted ? "Downloading..." : "Start Download";
+        }
+    }
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Models.Add(ModelDetails);
+        if (string.IsNullOrEmpty(ModelDetails.Name)) return;
+        var doc = new HtmlDocument();
+        doc.LoadHtml(ModelDetails.Name);
+        var link = doc.DocumentNode.SelectSingleNode("//a");
+        if (link is null) return;
+        var href = link.GetAttributeValue("href", "");
+        if (string.IsNullOrEmpty(href)) return;
+        DownloadUrl = href.Replace("blob/main/", "resolve/main/");
+        var modelName = Path.GetFileName(href);
+        var downloadfolder = ModelProvider.ModelPath;
+        Directory.CreateDirectory(downloadfolder);
+        DownloadPath = Path.Combine(downloadfolder, modelName);
+    }
+    async Task DownloadModel(ModelDetails modelDetails)
+    {
+
+
+        await DownloadAsync();
+    }
+
+    public double DownloadPercentage { get; set; }
+    async Task DownloadAsync()
+    {
+        CancelDownload = false;
+        if (string.IsNullOrEmpty(DownloadPath)) return;
+
+        ModelProgress = new DownloadProgress();
+
+        await ModelDownloader.DownloadModel(DownloadUrl, ModelDetails, DownloadPath, UpdateProgress, () => CancelDownload);
+
+
+    }
+
+    private void UpdateProgress(DownloadProgress progress)
+    {
+        ModelProgress = progress;
+        DownloadPercentage = (ModelProgress.DownloadPercentage * 100);
+        //StateHasChanged();
+        InvokeAsync(StateHasChanged); // Re-render the component on progress update
+    }
+
+    bool HasDownloadLink(ModelDetails modelDetails)
+    {
+        return !string.IsNullOrEmpty(modelDetails.Name) &&
+            modelDetails.Name.Contains("resolve/main");
+    }
+
+    string GetPropertyHtml(ModelDetails details, PropertyInfo p)
+    {
+        var value = p.GetValue(details);
+        if (value is null) return string.Empty;
+
+        var html = (string)value;
+        var doc = new HtmlDocument();
+        doc.LoadHtml(html);
+
+        var links = doc.DocumentNode.SelectNodes("//a");
+        if (links != null)
+        {
+            foreach (var link in links)
+            {
+                link.SetAttributeValue("target", "_blank");
+                var href = link.GetAttributeValue("href", "");
+
+                if (href.Contains("blob/main/"))
+                {
+                    details.Url = href;
+                    link.SetAttributeValue("href", href.Replace("blob/main/", "resolve/main/"));
+                    p.SetValue(details, doc.DocumentNode.OuterHtml);
+
+                }
+                else
+                    details.Url = details.Url;
+            }
+        }
+
+        return doc.DocumentNode.OuterHtml;
+
+    }
+    async Task SelectModel(ModelDetails modelDetails)
+    {
+        SelectedItem = modelDetails;
+        // Assuming you have access to the dialog instance or can otherwise close the dialog and set the result
+        await InvokeAsync(() => MudDialog.Close(DialogResult.Ok(SelectedItem)));
+
+    }
+    bool HasNonNullValues(PropertyInfo p)
+    {
+        if (p.PropertyType != typeof(string))
+            return false;
+        return Models.Any(x => p.GetValue(x) != null);
+    }
+
+    string DisplaySize(long value)
+    {
+        var dbl = (double)value / 1000 / 1000 / 1000;
+        return $"{dbl.ToString("n2")} GiB";
+    }
+
+}

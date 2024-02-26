@@ -1,0 +1,133 @@
+﻿@using BLlamaSharp.ChatGpt.Lib
+@using MudBlazor
+@using System.Reflection
+@using HtmlAgilityPack
+@using Humanizer
+@inject IDialogService DialogService
+@inject IRootFolderProvider RootFolderProvider
+@inject IModelProvider ModelProvider
+<style>
+    .mud-dialog {
+        max-width: 80%;
+        padding: 20px;
+    }
+
+    a {
+        color: blue;
+        font-weight: bold;
+    }
+</style>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Model: @Model.Name</MudText>
+
+<a href="@Model.Url" target="_blank">View Details</a>
+
+<MudTable Items="@Models" SortLabel="Sort By">
+    <HeaderContent>
+        @foreach (PropertyInfo p in typeof(ModelDetails).GetProperties().Where(x => HasNonNullValues(x)))
+        {
+            <MudTh>@p.Name.Humanize()</MudTh>
+        }
+        <MudTh>Select</MudTh> <!-- Header for the select column -->
+    </HeaderContent>
+    <RowTemplate>
+        @foreach (PropertyInfo p in typeof(ModelDetails).GetProperties().Where(x => HasNonNullValues(x)))
+        {
+            <MudTd>
+                @((MarkupString)(GetPropertyHtml(context, p)))
+            </MudTd>
+        }
+        <MudTd>
+            @{
+                if (ModelExists(context))
+                {
+                    <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Primary" />
+                }
+                if (HasDownloadLink(@context))
+                {
+                    <MudButton Color="Color.Primary" OnClick="() => DownloadModel(context)">Select</MudButton>
+                }
+                else
+                {
+                    <MudText Typo="Typo.body2">Manual download required</MudText>
+                }
+            }
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter] public List<ModelDetails> Models { get; set; } = new List<ModelDetails>();
+    [Parameter] public ModelBase Model { get; set; } = null!;
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+    public ModelDetails? SelectedItem { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+    async Task DownloadModel(ModelDetails modelDetails)
+    {
+
+        await SelectModel(modelDetails);
+    }
+
+    bool ModelExists(ModelDetails modelDetails)
+    {
+        return modelDetails.ModelMetaData.Exists;
+    }
+
+    bool HasDownloadLink(ModelDetails modelDetails)
+    {
+        return !string.IsNullOrEmpty(modelDetails.Name) &&
+            modelDetails.Name.Contains("resolve/main");
+    }
+    string GetPropertyHtml(ModelDetails details, PropertyInfo p)
+    {
+        var value = p.GetValue(details);
+        if (value is null) return string.Empty;
+
+        var html = (string)value;
+        var doc = new HtmlDocument();
+        doc.LoadHtml(html);
+
+        var links = doc.DocumentNode.SelectNodes("//a");
+        if (links != null)
+        {
+            foreach (var link in links)
+            {
+                link.SetAttributeValue("target", "_blank");
+                var href = link.GetAttributeValue("href", "");
+
+                if (href.Contains("blob/main/"))
+                {
+                    details.Url = href;
+                    link.SetAttributeValue("href", href.Replace("blob/main/", "resolve/main/"));
+                    p.SetValue(details, doc.DocumentNode.OuterHtml);
+
+                }
+                else
+                    details.Url = details.Url;
+            }
+        }
+
+        return doc.DocumentNode.OuterHtml;
+
+    }
+    async Task SelectModel(ModelDetails modelDetails)
+    {
+        SelectedItem = modelDetails;
+        // Assuming you have access to the dialog instance or can otherwise close the dialog and set the result
+        var result = new ModelsDialogResult() { ModelDetails = modelDetails, Exists = modelDetails.ModelMetaData.Exists };
+        await InvokeAsync(() => MudDialog.Close(DialogResult.Ok(result)));
+
+    }
+    bool HasNonNullValues(PropertyInfo p)
+    {
+        if (p.PropertyType != typeof(string)) return false;
+        return Models.Any(x => p.GetValue(x) != null);
+    }
+}
