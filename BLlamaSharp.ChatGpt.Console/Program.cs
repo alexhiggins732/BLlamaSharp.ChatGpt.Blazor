@@ -6,13 +6,14 @@ using Microsoft.KernelMemory;
 Console.ForegroundColor = ConsoleColor.White;
 
 
-await SemanticKernelChat.Run();
+//await SemanticKernelChat.Run();
 
+// TODO: Replace with your own API key
 Environment.SetEnvironmentVariable("OPENAI_API_KEY", "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");
 Console.WriteLine("Hello, World!");
 
 var memoryService = new KernelMemoryBuilder()
-    .WithOpenAIDefaults("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")
+    .WithOpenAIDefaults(Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? throw new Exception("OPENAI_API_KEY ENV.VAR NOT SET/"))
     .Build<MemoryServerless>();
 
 await memoryService.ImportWebPageAsync(
